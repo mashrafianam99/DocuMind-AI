@@ -45,18 +45,49 @@ class ChatResponse(BaseModel):
     model: str
 
 
-@lru_cache(maxsize=1)
-def get_embedding_model():
-    return SentenceTransformer(EMBEDDING_MODEL)
+def encode_texts(
+    texts: list[str],
+    task: str,
+) -> np.ndarray:
+    api_key = os.getenv("JINA_API_KEY")
 
+    if not api_key:
+        raise RuntimeError("JINA_API_KEY is not configured.")
 
-def encode_texts(texts: list[str]) -> np.ndarray:
-    return get_embedding_model().encode(
-        texts,
-        normalize_embeddings=True,
-        convert_to_numpy=True,
-        show_progress_bar=False,
+    if not texts:
+        return np.empty((0, EMBEDDING_DIMENSIONS), dtype=np.float32)
+
+    response = httpx.post(
+        JINA_EMBEDDINGS_URL,
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        },
+        json={
+            "model": JINA_EMBEDDING_MODEL,
+            "task": task,
+            "dimensions": EMBEDDING_DIMENSIONS,
+            "normalized": True,
+            "input": texts,
+        },
+        timeout=60.0,
     )
+    response.raise_for_status()
+
+    items = response.json()["data"]
+    items.sort(key=lambda item: item["index"])
+
+    vectors = np.asarray(
+        [item["embedding"] for item in items],
+        dtype=np.float32,
+    )
+
+    if vectors.shape != (len(texts), EMBEDDING_DIMENSIONS):
+        raise RuntimeError(
+            f"Unexpected embedding shape: {vectors.shape}"
+        )
+
+    return vectors
 
 
 def vector_literal(vector) -> str:
