@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from groq import APIError, Groq
 from pydantic import BaseModel, Field
-from sentence_transformers import SentenceTransformer
+import httpx
 
 from app.database import get_supabase
 from app.document_processor import extract_pdf_chunks
@@ -29,7 +29,9 @@ app.add_middleware(
 )
 
 MAX_PDF_SIZE = 10 * 1024 * 1024
-EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+JINA_EMBEDDING_MODEL = "jina-embeddings-v3"
+EMBEDDING_DIMENSIONS = 512
+JINA_EMBEDDINGS_URL = "https://api.jina.ai/v1/embeddings"
 
 
 class ChatRequest(BaseModel):
