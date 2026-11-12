@@ -1,26 +1,193 @@
 @import "tailwindcss";
 
+/* ---------- Design tokens ---------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --paper: #f5f2ea;
+  --paper-raised: #fbf9f4;
+  --paper-sunken: #ece7dc;
+  --ink: #1d1b17;
+  --ink-soft: #4a463e;
+  --ink-muted: #7c766a;
+  --line: #e0d9ca;
+  --line-strong: #cfc6b3;
+  --accent: #b5441b;
+  --accent-ink: #fffaf3;
+  --accent-soft: #f3e1d6;
+  --highlight: #f6e48c;
+  --highlight-soft: #fbf1c4;
+  --success: #2f7a4f;
+  --danger: #b3261e;
+  --danger-soft: #f8e3e0;
+  --shadow: 0 1px 0 rgb(29 27 23 / 0.04), 0 8px 24px -12px rgb(29 27 23 / 0.18);
+  color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme="light"]) {
+    --paper: #151412;
+    --paper-raised: #1d1b18;
+    --paper-sunken: #100f0d;
+    --ink: #ece7dc;
+    --ink-soft: #c4bdaf;
+    --ink-muted: #8c8577;
+    --line: #2c2924;
+    --line-strong: #3b372f;
+    --accent: #e0703f;
+    --accent-ink: #1a0f08;
+    --accent-soft: #3a2117;
+    --highlight: #6b5c1c;
+    --highlight-soft: #2f2a15;
+    --success: #6cc48f;
+    --danger: #f08a80;
+    --danger-soft: #3a1b18;
+    --shadow: 0 1px 0 rgb(0 0 0 / 0.3), 0 10px 30px -12px rgb(0 0 0 / 0.6);
+    color-scheme: dark;
   }
 }
 
+:root[data-theme="dark"] {
+  --paper: #151412;
+  --paper-raised: #1d1b18;
+  --paper-sunken: #100f0d;
+  --ink: #ece7dc;
+  --ink-soft: #c4bdaf;
+  --ink-muted: #8c8577;
+  --line: #2c2924;
+  --line-strong: #3b372f;
+  --accent: #e0703f;
+  --accent-ink: #1a0f08;
+  --accent-soft: #3a2117;
+  --highlight: #6b5c1c;
+  --highlight-soft: #2f2a15;
+  --success: #6cc48f;
+  --danger: #f08a80;
+  --danger-soft: #3a1b18;
+  --shadow: 0 1px 0 rgb(0 0 0 / 0.3), 0 10px 30px -12px rgb(0 0 0 / 0.6);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-raised: var(--paper-raised);
+  --color-paper-sunken: var(--paper-sunken);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-muted: var(--ink-muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-highlight: var(--highlight);
+  --color-highlight-soft: var(--highlight-soft);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --shadow-paper: var(--shadow);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-newsreader);
+}
+
+/* ---------- Base ---------- */
+html,
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+body {
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+::selection {
+  background: var(--highlight);
+  color: var(--ink);
+}
+
+/* Textareas are excluded: the composer shows focus on its container. */
+:not(textarea):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Subtle paper grain */
+.paper-grain {
+  background-image: radial-gradient(
+    rgb(127 115 90 / 0.08) 1px,
+    transparent 1px
+  );
+  background-size: 18px 18px;
+}
+
+/* Highlighter stroke for headings */
+.marker {
+  background: linear-gradient(
+    transparent 58%,
+    var(--highlight) 58%,
+    var(--highlight) 92%,
+    transparent 92%
+  );
+  padding: 0 0.08em;
+}
+
+/* Thin scrollbars */
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+/* ---------- Motion ---------- */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scan {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(420%);
+  }
+}
+
+@keyframes dot {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+.animate-rise {
+  animation: rise 360ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.animate-scan {
+  animation: scan 1.6s ease-in-out infinite;
+}
+
+.typing-dot {
+  animation: dot 1.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise,
+  .animate-scan,
+  .typing-dot {
+    animation: none;
+  }
 }
