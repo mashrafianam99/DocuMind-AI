@@ -390,8 +390,10 @@ def chat(request: ChatRequest):
         raise
 
     except httpx.HTTPError as exc:
+        # Supabase also uses httpx, so log the host to tell them apart.
+        host = exc.request.url.host if exc._request else "unknown"
         print(
-            "Jina embedding request failed: "
+            f"Upstream request to {host} failed: "
             f"{type(exc).__name__}: {exc}"
         )
         raise HTTPException(
