@@ -3,7 +3,7 @@ import type { DocumentInfo, Source } from "./types";
 const API_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
 
-export const MAX_PDF_BYTES = 10 * 1024 * 1024;
+export const MAX_PDF_BYTES = 4 * 1024 * 1024;
 
 const NETWORK_ERROR =
   "Can't reach the DocuMind server. Check your connection and try again.";
@@ -26,7 +26,7 @@ export function validatePdf(file: File): string | null {
     return "That file isn't a PDF. Choose a .pdf file.";
   }
   if (file.size > MAX_PDF_BYTES) {
-    return "That PDF is larger than 10 MB. Try a smaller file.";
+    return "That PDF is larger than 4 MB. Try a smaller file.";
   }
   return null;
 }

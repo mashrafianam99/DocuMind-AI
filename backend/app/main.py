@@ -32,7 +32,8 @@ app.add_middleware(
     allow_headers=["Content-Type"],
 )
 
-MAX_PDF_SIZE = 10 * 1024 * 1024
+# Vercel rejects request bodies over 4.5 MB, so keep uploads under that.
+MAX_PDF_SIZE = 4 * 1024 * 1024
 
 JINA_EMBEDDING_MODEL = "jina-embeddings-v3"
 EMBEDDING_DIMENSIONS = 512
@@ -145,7 +146,7 @@ async def upload_pdf(file: UploadFile = File(...)):
     if len(pdf_bytes) > MAX_PDF_SIZE:
         raise HTTPException(
             status_code=413,
-            detail="PDF exceeds the 10 MB upload limit.",
+            detail="PDF exceeds the 4 MB upload limit.",
         )
 
     filename = Path(file.filename).name

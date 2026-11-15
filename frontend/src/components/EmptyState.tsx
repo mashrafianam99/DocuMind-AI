@@ -19,7 +19,7 @@ const STAGES = [
 const STAGE_INTERVAL_MS = 2200;
 
 const STEPS = [
-  { n: "1", title: "Drop in a PDF", body: "Papers, reports, contracts, manuals. Up to 10 MB." },
+  { n: "1", title: "Drop in a PDF", body: "Papers, reports, contracts, manuals. Up to 4 MB." },
   { n: "2", title: "Ask in plain words", body: "Questions, summaries, comparisons, definitions." },
   { n: "3", title: "Check the evidence", body: "Every citation opens the exact passage and page." },
 ];
@@ -116,7 +116,7 @@ export function EmptyState({ uploading, fileName, onPick, onDropFile }: EmptySta
               >
                 Choose a file
               </button>
-              <p className="mt-4 font-mono text-[11px] text-ink-muted">PDF · max 10 MB</p>
+              <p className="mt-4 font-mono text-[11px] text-ink-muted">PDF · max 4 MB</p>
             </div>
           )}
         </div>
